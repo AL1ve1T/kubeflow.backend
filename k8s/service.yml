@@ -1,14 +1,14 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: kubeflow-backend
-  namespace: kubeflow
+  name: kubevizor-backend
+  namespace: kubevizor
   labels:
-    app: kubeflow-backend
+    app: kubevizor-backend
 spec:
   type: ClusterIP
   selector:
-    app: kubeflow-backend
+    app: kubevizor-backend
   ports:
     - port: 8080
       targetPort: 8080

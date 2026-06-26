@@ -15,7 +15,7 @@ apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: otel-collector
-  namespace: kubeflow
+  namespace: kubevizor
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
@@ -41,7 +41,7 @@ metadata:
 subjects:
   - kind: ServiceAccount
     name: otel-collector
-    namespace: kubeflow
+    namespace: kubevizor
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
@@ -51,7 +51,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: otel-collector-config
-  namespace: kubeflow
+  namespace: kubevizor
 data:
   otel-collector-config.yaml: |
     extensions:
@@ -83,7 +83,7 @@ data:
           # The kubelet stats summary API on Minikube does not expose container memory
           # limits in a form kubeletstats can use to compute the ratio. The backend
           # instead reads container.memory.working_set (raw bytes, always emitted) and
-          # divides by kubeflow.memory-limit-bytes from application.yml.
+          # divides by kubevizor.memory-limit-bytes from application.yml.
           # Also enable pod-level CPU utilization as a fallback.
           k8s.pod.cpu.utilization:
             enabled: true
@@ -112,12 +112,12 @@ data:
     exporters:
       debug:
         verbosity: basic
-      otlphttp/kubeflow_backend:
-        # Endpoint is injected from the KUBEFLOW_BACKEND_ENDPOINT env var so it
+      otlphttp/kubevizor_backend:
+        # Endpoint is injected from the KUBEVIZOR_BACKEND_ENDPOINT env var so it
         # can be overridden without editing this ConfigMap.
         # Local dev (Minikube → host machine): http://host.docker.internal:8080
-        # In-cluster: http://kubeflow-backend.kubeflow.svc.cluster.local:8080
-        endpoint: "${env:KUBEFLOW_BACKEND_ENDPOINT}"
+        # In-cluster: http://kubevizor-backend.kubevizor.svc.cluster.local:8080
+        endpoint: "${env:KUBEVIZOR_BACKEND_ENDPOINT}"
         encoding: json
         compression: none
         tls:
@@ -129,11 +129,11 @@ data:
         traces:
           receivers: [otlp]
           processors: [batch]
-          exporters: [debug, otlphttp/kubeflow_backend]
+          exporters: [debug, otlphttp/kubevizor_backend]
         metrics:
           receivers: [otlp, kubeletstats]
           processors: [batch, k8sattributes]
-          exporters: [debug, otlphttp/kubeflow_backend]
+          exporters: [debug, otlphttp/kubevizor_backend]
         logs:
           receivers: [otlp]
           processors: [batch]
@@ -143,7 +143,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: otel-collector
-  namespace: kubeflow
+  namespace: kubevizor
 spec:
   replicas: 1
   selector:
@@ -168,9 +168,9 @@ spec:
                 fieldRef:
                   fieldPath: spec.nodeName
             # Where to export telemetry.
-            # Override to http://kubeflow-backend.kubeflow.svc.cluster.local:8080
+            # Override to http://kubevizor-backend.kubevizor.svc.cluster.local:8080
             # when the backend is deployed inside the cluster.
-            - name: KUBEFLOW_BACKEND_ENDPOINT
+            - name: KUBEVIZOR_BACKEND_ENDPOINT
               value: "http://host.docker.internal:8080"
           ports:
             - containerPort: 4317
@@ -208,7 +208,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: otel-collector
-  namespace: kubeflow
+  namespace: kubevizor
   labels:
     app: otel-collector
 spec:

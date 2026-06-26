@@ -1,13 +1,13 @@
 apiVersion: v1
 kind: ServiceAccount
 metadata:
-  name: kubeflow-backend
-  namespace: kubeflow
+  name: kubevizor-backend
+  namespace: kubevizor
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
-  name: kubeflow-backend-pod-reader
+  name: kubevizor-backend-pod-reader
 rules:
   - apiGroups: [""]
     resources: ["pods"]
@@ -16,12 +16,12 @@ rules:
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
-  name: kubeflow-backend-pod-reader
+  name: kubevizor-backend-pod-reader
 subjects:
   - kind: ServiceAccount
-    name: kubeflow-backend
-    namespace: kubeflow
+    name: kubevizor-backend
+    namespace: kubevizor
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
-  name: kubeflow-backend-pod-reader
+  name: kubevizor-backend-pod-reader

@@ -15,10 +15,10 @@ mvn clean package
 # Build without tests
 mvn -q -DskipTests package
 
-# Run locally (default profile → H2 file DB at ./data/kubeflow)
+# Run locally (default profile → H2 file DB at ./data/kubevizor)
 mvn spring-boot:run
 # or
-java -jar target/kubeflow-backend-*.jar
+java -jar target/kubevizor-backend-*.jar
 ```
 
 The backend starts on **http://localhost:8080**. Useful local URLs:
@@ -27,7 +27,7 @@ The backend starts on **http://localhost:8080**. Useful local URLs:
 - Current graph: `http://localhost:8080/api/graph`
 - SSE stream: `http://localhost:8080/api/graph/stream`
 - H2 console: `http://localhost:8080/h2-console`
-  (JDBC URL `jdbc:h2:file:./data/kubeflow`, user `sa`, no password)
+  (JDBC URL `jdbc:h2:file:./data/kubevizor`, user `sa`, no password)
 
 ## Testing
 
@@ -38,7 +38,7 @@ Run the full suite:
 mvn test
 ```
 
-Existing test coverage (under `src/test/java/com/kubeflow`) targets the pipeline
+Existing test coverage (under `src/test/java/com/kubevizor`) targets the pipeline
 stages that matter most:
 
 - `parsing/SpanParserTest` — span field extraction.
@@ -57,7 +57,7 @@ When you add behavior, add or update the matching unit test in the same package.
 
 To exercise the pipeline without a cluster, POST an OTLP/HTTP JSON trace payload
 to `/v1/traces` (or metrics to `/v1/metrics`). With a cluster, run the OTel
-Collector and point its `KUBEFLOW_BACKEND_ENDPOINT` at the host
+Collector and point its `KUBEVIZOR_BACKEND_ENDPOINT` at the host
 (`http://host.docker.internal:8080`) — see [deployment.md](deployment.md).
 
 For pod-status/pod-IP enrichment without an in-cluster ServiceAccount, run
@@ -69,10 +69,10 @@ For pod-status/pod-IP enrichment without an in-cluster ServiceAccount, run
 A graph that is empty or keeps emptying usually means one of:
 
 1. **No telemetry arriving** — check collector logs and the
-   `KUBEFLOW_BACKEND_ENDPOINT` routing (`host.docker.internal`, **not**
+   `KUBEVIZOR_BACKEND_ENDPOINT` routing (`host.docker.internal`, **not**
    `host.minikube.internal`, in this environment).
 2. **Stale cleanup outpacing traffic** — under low traffic, edges/nodes age out
-   after `kubeflow.stale-threshold-seconds`. Raise it for quiet demos.
+   after `kubevizor.stale-threshold-seconds`. Raise it for quiet demos.
 3. **Resource metrics zeroed** — utilization older than
    `resource-metric-stale-seconds` reports `0.0` and calms `loadLevel`.
 

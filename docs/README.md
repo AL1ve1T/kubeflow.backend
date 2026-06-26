@@ -1,6 +1,6 @@
-# kubeflow.backend Documentation
+# kubevizor.backend Documentation
 
-`kubeflow.backend` is a Kubernetes observability backend. It ingests OpenTelemetry
+`kubevizor.backend` is a Kubernetes observability backend. It ingests OpenTelemetry
 telemetry emitted by demo workloads, transforms raw traces and metrics into a live
 service-topology graph, aggregates rolling per-edge metrics, and publishes
 frontend-ready graph snapshots over REST and Server-Sent Events (SSE).
@@ -39,7 +39,7 @@ OTLP metrics ─┘                                              │
 | [domain-model.md](domain-model.md) | `Node`, `Edge`, `InteractionEvent`, `GraphSnapshot`, enums, DTOs |
 | [telemetry-pipeline.md](telemetry-pipeline.md) | Ingestion, parsing, normalization, topology resolution, aggregation, cleanup |
 | [api.md](api.md) | REST endpoints, SSE stream, OpenAPI/Swagger |
-| [configuration.md](configuration.md) | `kubeflow.*` properties, Spring profiles, environment variables |
+| [configuration.md](configuration.md) | `kubevizor.*` properties, Spring profiles, environment variables |
 | [deployment.md](deployment.md) | Docker, Kubernetes manifests, Minikube, Beyla, OTel Collector |
 | [development.md](development.md) | Local build/run, testing, debugging telemetry routing |
 

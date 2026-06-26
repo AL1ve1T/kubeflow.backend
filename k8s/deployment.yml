@@ -1,24 +1,24 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: kubeflow-backend
-  namespace: kubeflow
+  name: kubevizor-backend
+  namespace: kubevizor
   labels:
-    app: kubeflow-backend
+    app: kubevizor-backend
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: kubeflow-backend
+      app: kubevizor-backend
   template:
     metadata:
       labels:
-        app: kubeflow-backend
+        app: kubevizor-backend
     spec:
-      serviceAccountName: kubeflow-backend
+      serviceAccountName: kubevizor-backend
       containers:
-        - name: kubeflow-backend
-          image: kubeflow-backend:latest
+        - name: kubevizor-backend
+          image: kubevizor-backend:latest
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8080
@@ -26,21 +26,21 @@ spec:
           env:
             - name: SERVER_PORT
               value: "8080"
-            - name: KUBEFLOW_STALE_THRESHOLD_SECONDS
+            - name: KUBEVIZOR_STALE_THRESHOLD_SECONDS
               value: "120"
             - name: SPRING_PROFILES_ACTIVE
               value: "k8s"
             - name: DB_HOST
-              value: "kubeflow-postgres"
+              value: "kubevizor-postgres"
             - name: DB_USERNAME
               valueFrom:
                 secretKeyRef:
-                  name: kubeflow-postgres-secret
+                  name: kubevizor-postgres-secret
                   key: POSTGRES_USER
             - name: DB_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: kubeflow-postgres-secret
+                  name: kubevizor-postgres-secret
                   key: POSTGRES_PASSWORD
           readinessProbe:
             httpGet:
